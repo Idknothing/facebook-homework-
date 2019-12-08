@@ -17,10 +17,10 @@ class Signin extends CI_Controller {
 	}
 
 	public function signup_form_valid(){
-		//TODO form validation
 		//modelde insert yazmakla başlayalım(yapıldı ve üzerinden saatler geçti)
+		//çok yorum yazmadım çünkü bana soru sorulduğunda yoruma baktı denmesinden hoşlanmıyorum..
 		$this->form_validation->set_rules('loginad', 'İsim', 'required');
-		$this->form_validation->set_rules('loginpwd', 'Şifre', 'required');
+		$this->form_validation->set_rules('loginpwd', 'Şifre', 'callback_sifre_kontrol');
 		$this->form_validation->set_rules('logincinsiyet', 'Cinsiyet', 'required');
 		$this->form_validation->set_rules('loginemail', 'Email', 'callback_email_check');
 		$this->form_validation->set_message('required', "Lütfen geçerli bir {field} giriniz...");
@@ -43,7 +43,7 @@ class Signin extends CI_Controller {
 				'cinsiyet' 	=> $signform->cins,
 				'dogum'		=> $signform->dogum,
 			);
-			//TODO error handling
+			//TODO index routing
 			print_r($insert);
 			$query = $this->signup_model->insert($insert);
 		}else{
@@ -54,9 +54,23 @@ class Signin extends CI_Controller {
 
 	}
 	public function signin(){
-		$this->input->post('email');
-		$this->input->post('password');
+		//önce kontrol edelim
+		$this->form_validation->set_rules('email', 'E-mail', 'callback_giris_kontrol[email]');
+		$this->form_validation->set_rules('password', 'Şifre', 'callback_giris_kontrol[sifre]');
+		//dont repeat yourself
+		$validate = $this->form_validation->run();
+		if($validate){
+			echo "Başarıyla giriş yaptın";
+		}else{
+			$viewData = new stdClass();
+			$viewData->form_error =  true;
+			$this->load->view('signin/index', $viewData);
+		}
+
+
 	}
+
+	//checkleri en sona alacağım
 	public function email_check($str)
 	{
 		$where = array(
@@ -72,6 +86,26 @@ class Signin extends CI_Controller {
 		}
 
 	}
-}
+	public function sifre_kontrol($str){
+		$karakterSayisi = strlen($str);
+		if($karakterSayisi < 18){
+			return true;
+		}else{
+			$this->form_validation->set_message('sifre_kontrol', 'Şifre 17 karakterden uzun olmamalıdır');
+			return false;
+		}
+	}
+	public function giris_kontrol($str, $inf){
+		$bilgi = array(
+			"{$inf}" => $str,
+		);
+		$query = $this->signup_model->get($bilgi);
+		if($query->num_rows() == 0){
+			$this->form_validation->set_message("{$inf}", 'giris_kontrol', 'Yanlış kullanıcı adı veya şifre');
+			return false;
+		}else{
+			return true;
+		}
+	}
 
-/* End of file Controllername.php */
+}

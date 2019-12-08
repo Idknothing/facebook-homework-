@@ -53,4 +53,5 @@ $route['default_controller'] = 'signin';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 $route['form_valid'] = 'signin/signup_form_valid';
+$route['signin'] = 'signin/signin';
 

@@ -2,9 +2,12 @@
 	<div class="ust">
 		<div class="container">
 			<img class="logo mt-2" src="<?php echo base_url('assets/img/facebook.png')?>"></img>
-			<form action="" method="post">
+			<form action="signin" method="post">
 				<table align="right"class="login input" >
 					<tbody >
+					<?php if(isset($form_error)){
+						echo "<tr><td><label>Yanlış Kullanıcı Adı veya Şifre</label></td></tr>";
+					 } ?>
 						<tr>
 							<td><label for="email">E-posta veya Telefon</label></td>
 							<td><label class="input" for="password">Şifre</label></td>
@@ -17,7 +20,7 @@
 								<input type="password" name="password" placeholder="">
 							</td>
 							<td>
-								<button class="btn p-0 bt-rnk" type="submit pddd"><b class="pdd">Giriş Yap</b></button>
+								<button class="btn p-0 bt-rnk" type="submit"><b class="pdd">Giriş Yap</b></button>
 							</td>
 						</tr>
 					</tbody>
@@ -93,7 +96,7 @@
 							<div class="row">
 								<div class="col">
 									<div class="ratio">
-										<input class = "npt" type="radio" name="logincinsiyet" value="1" required>Kız
+										<input class = "npt" type="radio" name="logincinsiyet" value="1" required >Kız
 									</div>
 
 								</div>
